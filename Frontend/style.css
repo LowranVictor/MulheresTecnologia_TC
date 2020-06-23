@@ -1,0 +1,32 @@
+#formLoginContainer {
+    width: 100%;
+}
+
+#formDadosUsuario,
+#formAtualizaDadosUsuario {
+    margin-left: 20%;
+    margin-right: -35%;
+}
+
+#comentarios {
+    height: 40px;
+    /*width: 1080px;*/
+}
+
+#btnEnviar {
+    height: 30px;
+    width: 80px;
+    border: solid 1px;
+    border-radius: 5px;
+    background-color: #e83e8c;
+    color: white;
+    border-color: #e83e8c;
+}
+
+#navbarsExampleDefault ul {
+    justify-content: flex-end;
+}
+
+#dash {
+    color: white !important;
+}
