@@ -20,12 +20,12 @@ $(document).ready(function() {
             location.href = 'home.html'
     });
 
-    usuario.recuperaEstado();
 
-    $('#cidade').select2()
+
     $("#estado").on("select2:select", function(e) {
         $("#cidade").select2("destroy");
-        usuario.recuperaCidade(e.params.data.id);
+        $('#cidade').val('').trigger('change')
+        usuario.carregaCidades(e.params.data.id);
     });
 
 });
@@ -62,10 +62,8 @@ var usuario = {
                     $('#sexo').val(dadosUsuario.sexo);
                     $('#email').val(dadosUsuario.email);
                     $('#pais').val(dadosUsuario.pais);
-                    //$('#estado').select2();
-                    //$('#estado').select2('data', { id: 100, text: 'dadosUsuario.estado' });
-
-                    $('#cidade').val(dadosUsuario.cidade);
+                    usuario.recuperaEstado(dadosUsuario.estado);
+                    usuario.recuperaCidade(dadosUsuario.estado, dadosUsuario.cidade);
                 }
             },
             error: function(erroApi) {
@@ -82,48 +80,39 @@ var usuario = {
         var sexo = $('#sexo').val();
         var email = $('#email').val();
         var pais = $('#pais').val();
-        var estado = $('#estado option:selected').html();
-        var cidade = $('#cidade option:selected').html();
+        var estado = $('#estado').val();
+        var cidade = $('#cidade').val();
 
         return { nome: nome, sobrenome: sobrenome, username: username, sexo: sexo, email: email, pais: pais, estado: estado, cidade: cidade }
 
     },
 
-    recuperaEstado: function() {
-        $('#estado').select2({
-            minimumResultsForSearch: -1,
-            ajax: {
-                crossDomain: true,
-                url: 'http://localhost:3000/Estados/recuperaEstado',
-                processResults: function(data) {
-                    // Transforms the top-level key of the response object from 'items' to 'results'
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-
-        var estados = $('#estado');
+    recuperaEstado: function(valorInicial) {
+        var estado = $('#estado')
         $.ajax({
             type: 'GET',
-            url: 'http://localhost:3000/Estados/recuperaEstado'
-        }).then(function(data) {
-            // create the option and append to Select2
-            var option = new Option(data.text, data.id, true, true);
-            estados.append(option).trigger('change');
-
-            // manually trigger the `select2:select` event
-            estados.trigger({
-                type: 'select2:select',
-                params: {
-                    data: { id: "27", text: "MINAS GERAIS" }
-                }
-            });
-        });
+            url: 'http://localhost:3000/Estados/recuperaEstado',
+            success: function(retorno) {
+                estado.select2({ minimumResultsForSearch: -1, data: retorno })
+                estado.val(valorInicial)
+                estado.trigger('change');
+            }
+        })
     },
 
-    recuperaCidade: function(idEstado) {
+    recuperaCidade: function(idEstado, valorInicial) {
+        var cidade = $('#cidade')
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:3000/Estados/recuperaCidade/' + idEstado,
+            success: function(retorno) {
+                cidade.select2({ minimumResultsForSearch: -1, data: retorno.detalhes })
+                cidade.val(valorInicial)
+                cidade.trigger('change');
+            }
+        })
+    },
+    carregaCidades: function(idEstado) {
         $('#cidade').select2({
             minimumResultsForSearch: -1,
             ajax: {

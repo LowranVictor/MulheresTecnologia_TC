@@ -76,8 +76,8 @@ var cadastro = {
         var senha = $('#senha').val();
         var confirmarSenha = $('#confirmarSenha').val();
         var pais = $('#pais').val();
-        var estado = $('#estado option:selected').html();
-        var cidade = $('#cidade option:selected').html();
+        var estado = $('#estado').val();
+        var cidade = $('#cidade').val();
 
         return { nome: nome, sobrenome: sobrenome, username: username, sexo: sexo, email: email, senha: senha, confirmarSenha: confirmarSenha, pais: pais, estado: estado, cidade: cidade }
 
