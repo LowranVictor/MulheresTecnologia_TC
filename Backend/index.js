@@ -16,6 +16,7 @@ client.connect(err => {
     console.log('Conexão com o banco de dados realizada com sucesso!')
     const rotas = require('./rotas/rotasUsuario')(client);
     const rotComent = require('./rotas/rotasComentarios')(client);
+    const rotEstado = require('./rotas/rotasEstadoCidades')(client);
 
     app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', "*");
@@ -23,6 +24,7 @@ client.connect(err => {
         res.header('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept");
         next()
     })
+    app.use("/Estados", rotEstado);
     app.use("/Comentarios", rotComent);
     app.use("/User", rotas);
 })

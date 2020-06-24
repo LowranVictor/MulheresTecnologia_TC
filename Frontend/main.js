@@ -21,6 +21,14 @@ $(document).ready(function() {
         return false;
     });
 
+    cadastro.recuperaEstado();
+
+    $('#cidade').select2()
+    $("#estado").on("select2:select", function(e) {
+        $("#cidade").select2("destroy");
+        cadastro.recuperaCidade(e.params.data.id);
+    });
+
 });
 
 var login = {
@@ -68,8 +76,8 @@ var cadastro = {
         var senha = $('#senha').val();
         var confirmarSenha = $('#confirmarSenha').val();
         var pais = $('#pais').val();
-        var estado = $('#estado').val();
-        var cidade = $('#cidade').val();
+        var estado = $('#estado option:selected').html();
+        var cidade = $('#cidade option:selected').html();
 
         return { nome: nome, sobrenome: sobrenome, username: username, sexo: sexo, email: email, senha: senha, confirmarSenha: confirmarSenha, pais: pais, estado: estado, cidade: cidade }
 
@@ -85,6 +93,38 @@ var cadastro = {
 
             return false;
         }
+    },
+
+    recuperaEstado: function() {
+        $('#estado').select2({
+            minimumResultsForSearch: -1,
+            ajax: {
+                crossDomain: true,
+                url: 'http://localhost:3000/Estados/recuperaEstado',
+                processResults: function(data) {
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    },
+
+    recuperaCidade: function(idEstado) {
+        $('#cidade').select2({
+            minimumResultsForSearch: -1,
+            ajax: {
+                crossDomain: true,
+                url: 'http://localhost:3000/Estados/recuperaCidade/' + idEstado,
+                processResults: function(data) {
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: data.detalhes
+                    };
+                }
+            }
+        });
     },
 
     cadastraUsuario: function(nome, sobrenome, username, sexo, email, senha, pais, estado, cidade) {
